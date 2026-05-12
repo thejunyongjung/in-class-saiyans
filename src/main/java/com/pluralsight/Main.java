@@ -10,7 +10,14 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Fighter> team = new ArrayList<>();
     static ArrayList<String> battleReport = new ArrayList<>();
-    static final String SOUND_FILE = "sounds/goku-kamehameha-sound-effect.wav";
+    static final String RESET = "\u001B[0m";
+    static final String RED = "\u001B[31m";
+    static final String GREEN = "\u001B[32m";
+    static final String YELLOW = "\u001B[33m";
+    static final String BLUE = "\u001B[34m";
+    static final String PURPLE = "\u001B[35m";
+    static final String CYAN = "\u001B[36m";
+    static final String BOLD = "\u001B[1m";
 
     public static void main(String[] args) {
         boolean running = true;
@@ -51,14 +58,15 @@ public class Main {
     }
 
     public static void displayMenu() {
-        System.out.println("=== DBZ Battle Arena ===");
+        printDivider();
+        System.out.println(BOLD + CYAN + "=== DBZ Battle Arena ===" + RESET);
         System.out.println();
-        System.out.println("1) Create Saiyan");
-        System.out.println("2) Create Namekian");
-        System.out.println("3) View Team");
-        System.out.println("4) Calculate Total Team Power");
-        System.out.println("5) Start Battle");
-        System.out.println("6) Save Battle Report");
+        System.out.println(GREEN + "1) Create Saiyan" + RESET);
+        System.out.println(GREEN + "2) Create Namekian" + RESET);
+        System.out.println(BLUE + "3) View Team" + RESET);
+        System.out.println(BLUE + "4) Calculate Total Team Power" + RESET);
+        System.out.println(RED + "5) Start Battle" + RESET);
+        System.out.println(YELLOW + "6) Save Battle Report" + RESET);
         System.out.println("0) Exit");
         System.out.println();
     }
@@ -73,7 +81,8 @@ public class Main {
         team.add(saiyan);
 
         String message = name + " has been added to your team!";
-        System.out.println(message);
+        System.out.println();
+        System.out.println(GREEN + message + RESET);
         System.out.println();
         battleReport.add(message);
         pause(3000);
@@ -89,7 +98,8 @@ public class Main {
         team.add(namekian);
 
         String message = name + " has been added to your team!";
-        System.out.println(message);
+        System.out.println();
+        System.out.println(GREEN + message + RESET);
         System.out.println();
         battleReport.add(message);
         pause(3000);
@@ -102,11 +112,13 @@ public class Main {
             return;
         }
 
-        System.out.println("=== Your Team ===");
+        printDivider();
+        System.out.println(BOLD + CYAN + "=== Your Team ===" + RESET);
+        System.out.println();
 
         for (int i = 0; i < team.size(); i++) {
             Fighter fighter = team.get(i);
-            System.out.println((i + 1) + ") " + fighter.getFighterInfo());
+            System.out.println(YELLOW + (i + 1) + ") " + RESET + fighter.getFighterInfo());
         }
 
         System.out.println();
@@ -120,7 +132,8 @@ public class Main {
         }
 
         String message = "Total team power: " + totalPower;
-        System.out.println(message);
+        System.out.println();
+        System.out.println(BOLD + GREEN + message + RESET);
         System.out.println();
         battleReport.add(message);
     }
@@ -133,29 +146,99 @@ public class Main {
         }
 
         battleReport.add("=== Battle Started ===");
-        System.out.println("=== Battle Started ===");
-        SoundPlayer.playSound(SOUND_FILE);
-        pause(3000);
+        printDivider();
+        System.out.println(BOLD + RED + "=== Battle Started ===" + RESET);
+        System.out.println();
 
-        for (Fighter fighter : team) {
-            String attackMessage = fighter.attack();
-            String specialMoveMessage = fighter.specialMove();
-            String attackMessage2 = fighter.attack();
+        Frieza frieza = new Frieza("Frieza", 15000, 500);
+        String friezaMessage = "Frieza enters the arena! " + frieza.getFighterInfo();
+        System.out.println(BOLD + PURPLE + friezaMessage + RESET);
+        battleReport.add(friezaMessage);
+        System.out.println();
 
+        int round = 1;
 
-            System.out.println(attackMessage);
-            System.out.println(specialMoveMessage);
-            System.out.println(attackMessage2);
-
-            battleReport.add(attackMessage);
-            battleReport.add(specialMoveMessage);
-            battleReport.add(attackMessage2);
-
+        while (frieza.getHealth() > 0 && !isTeamDefeated()) {
+            String roundMessage = "=== Round " + round + " ===";
+            printDivider();
+            System.out.println(BOLD + YELLOW + roundMessage + RESET);
             System.out.println();
+            battleReport.add(roundMessage);
+
+            for (Fighter fighter : team) {
+                if (frieza.getHealth() <= 0 || isTeamDefeated()) {
+                    break;
+                }
+
+                if (fighter.getHealth() <= 0) {
+                    continue;
+                }
+
+                String turnMessage = "[" + fighter.getName() + "'s turn!]";
+                System.out.println(BOLD + CYAN + turnMessage + RESET);
+                System.out.println();
+                battleReport.add(turnMessage);
+
+                String specialMoveMessage = fighter.specialMove(scanner);
+                int damage = fighter.getAttackDamage();
+                String attackMessage = fighter.attack();
+                String friezaDamageMessage = frieza.takeDamage(damage);
+                System.out.println();
+                System.out.println(YELLOW + specialMoveMessage + RESET);
+                System.out.println(GREEN + attackMessage + RESET);
+                System.out.println(RED + friezaDamageMessage + RESET);
+
+                battleReport.add(specialMoveMessage);
+                battleReport.add(attackMessage);
+                battleReport.add(friezaDamageMessage);
+
+                if (frieza.getHealth() > 0) {
+                    String friezaTurnMessage = "[Frieza's turn!]";
+                    System.out.println();
+                    System.out.println(BOLD + PURPLE + friezaTurnMessage + RESET);
+                    System.out.println();
+                    battleReport.add(friezaTurnMessage);
+
+                    String friezaAttackMessage = frieza.attack();
+                    int friezaDamage = frieza.getPowerLevel() / 300;
+
+                    if (friezaDamage < 45) {
+                        friezaDamage = 45;
+                    }
+
+                    String fighterDamageMessage = fighter.takeDamage(friezaDamage);
+
+                    System.out.println(PURPLE + friezaAttackMessage + RESET);
+                    System.out.println(RED + fighterDamageMessage + RESET);
+
+                    battleReport.add(friezaAttackMessage);
+                    battleReport.add(fighterDamageMessage);
+                }
+
+                System.out.println();
+            }
+
+            round++;
         }
 
+        String resultMessage;
+
+        if (frieza.getHealth() <= 0) {
+            resultMessage = "Your team defeated Frieza!";
+        } else {
+            resultMessage = "Your team has been defeated. Frieza wins!";
+        }
+
+        printDivider();
+        if (frieza.getHealth() <= 0) {
+            System.out.println(BOLD + GREEN + resultMessage + RESET);
+        } else {
+            System.out.println(BOLD + RED + resultMessage + RESET);
+        }
+        System.out.println();
+        battleReport.add(resultMessage);
         battleReport.add("=== Battle Ended ===");
-        System.out.println("=== Battle Ended ===");
+        System.out.println(BOLD + CYAN + "=== Battle Ended ===" + RESET);
         System.out.println();
     }
 
@@ -189,10 +272,11 @@ public class Main {
             }
 
             writer.close();
-            System.out.println("Battle report saved to transactions.txt");
+            System.out.println();
+            System.out.println(GREEN + "Battle report saved to transactions.txt" + RESET);
             System.out.println();
         } catch (IOException e) {
-            System.out.println("There was a problem saving the battle report.");
+            System.out.println(RED + "There was a problem saving the battle report." + RESET);
             System.out.println();
         }
     }
@@ -204,11 +288,26 @@ public class Main {
         return number;
     }
 
+    public static boolean isTeamDefeated() {
+        for (Fighter fighter : team) {
+            if (fighter.getHealth() > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static void pause(int milliseconds) {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    public static void printDivider() {
+        System.out.println();
+        System.out.println(BOLD + "----------------------------------------" + RESET);
     }
 }
