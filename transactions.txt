@@ -1,0 +1,48 @@
+=== DBZ Battle Arena Report ===
+
+Team:
+- Goku | Power Level: 5000 | Health: 51
+- Piccolo | Power Level: 1000 | Health: 201
+
+Battle Results:
+Goku has been added to your team!
+Piccolo has been added to your team!
+=== Battle Started ===
+Frieza enters the arena! Frieza | Power Level: 15000 | Health: 500
+=== Round 1 ===
+[Goku's turn!]
+Goku transforms into Super Saiyan God! New power level: 15000. The next attack is 5 times stronger!
+Goku uses Kamehameha with power level 15000! Power level returns to 5000.
+Frieza takes 75 damage. Health left: 425
+[Frieza's turn!]
+Frieza attacks back with power level 15000!
+Goku takes 50 damage. Health left: 101
+[Piccolo's turn!]
+Piccolo uses Special Beam Cannon! The next attack is 10 times stronger!
+Piccolo attacks with power level 4000!
+Frieza takes 100 damage. Health left: 325
+[Frieza's turn!]
+Frieza attacks back with power level 15000!
+Piccolo takes 50 damage. Health left: 151
+=== Round 2 ===
+[Goku's turn!]
+Goku transforms into Super Saiyan Blue! New power level: 20000. The next attack is 8 times stronger!
+Goku uses Kamehameha with power level 20000! Power level returns to 5000.
+Frieza takes 160 damage. Health left: 165
+[Frieza's turn!]
+Frieza attacks back with power level 15000!
+Goku takes 50 damage. Health left: 51
+[Piccolo's turn!]
+Piccolo regenerates 100 health! Current health: 251. Current power level: 1000
+Piccolo attacks with power level 1000!
+Frieza takes 10 damage. Health left: 155
+[Frieza's turn!]
+Frieza attacks back with power level 15000!
+Piccolo takes 50 damage. Health left: 201
+=== Round 3 ===
+[Goku's turn!]
+Goku transforms into Super Saiyan Blue! New power level: 20000. The next attack is 8 times stronger!
+Goku uses Kamehameha with power level 20000! Power level returns to 5000.
+Frieza takes 160 damage. Health left: 0
+Your team defeated Frieza!
+=== Battle Ended ===
