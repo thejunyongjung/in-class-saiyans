@@ -1,4 +1,214 @@
 package com.pluralsight;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
 public class Main {
+    static Scanner scanner = new Scanner(System.in);
+    static ArrayList<Fighter> team = new ArrayList<>();
+    static ArrayList<String> battleReport = new ArrayList<>();
+    static final String SOUND_FILE = "sounds/goku-kamehameha-sound-effect.wav";
+
+    public static void main(String[] args) {
+        boolean running = true;
+
+        while (running) {
+            displayMenu();
+            int choice = getIntInput("Choose an option: ");
+
+            switch (choice) {
+                case 1:
+                    createSaiyan();
+                    break;
+                case 2:
+                    createNamekian();
+                    break;
+                case 3:
+                    viewTeam();
+                    break;
+                case 4:
+                    calculateTotalTeamPower();
+                    break;
+                case 5:
+                    startBattle();
+                    break;
+                case 6:
+                    saveBattleReport();
+                    break;
+                case 0:
+                    running = false;
+                    System.out.println("Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid option. Try again.");
+                    System.out.println();
+                    break;
+            }
+        }
+    }
+
+    public static void displayMenu() {
+        System.out.println("=== DBZ Battle Arena ===");
+        System.out.println();
+        System.out.println("1) Create Saiyan");
+        System.out.println("2) Create Namekian");
+        System.out.println("3) View Team");
+        System.out.println("4) Calculate Total Team Power");
+        System.out.println("5) Start Battle");
+        System.out.println("6) Save Battle Report");
+        System.out.println("0) Exit");
+        System.out.println();
+    }
+
+    public static void createSaiyan() {
+        System.out.print("Enter Saiyan name: ");
+        String name = scanner.nextLine();
+        int powerLevel = getIntInput("Enter power level: ");
+        int health = getIntInput("Enter health: ");
+
+        Saiyan saiyan = new Saiyan(name, powerLevel, health);
+        team.add(saiyan);
+
+        String message = name + " has been added to your team!";
+        System.out.println(message);
+        System.out.println();
+        battleReport.add(message);
+        pause(3000);
+    }
+
+    public static void createNamekian() {
+        System.out.print("Enter Namekian name: ");
+        String name = scanner.nextLine();
+        int powerLevel = getIntInput("Enter power level: ");
+        int health = getIntInput("Enter health: ");
+
+        Namekian namekian = new Namekian(name, powerLevel, health);
+        team.add(namekian);
+
+        String message = name + " has been added to your team!";
+        System.out.println(message);
+        System.out.println();
+        battleReport.add(message);
+        pause(3000);
+    }
+
+    public static void viewTeam() {
+        if (team.isEmpty()) {
+            System.out.println("Your team is empty.");
+            System.out.println();
+            return;
+        }
+
+        System.out.println("=== Your Team ===");
+
+        for (int i = 0; i < team.size(); i++) {
+            Fighter fighter = team.get(i);
+            System.out.println((i + 1) + ") " + fighter.getFighterInfo());
+        }
+
+        System.out.println();
+    }
+
+    public static void calculateTotalTeamPower() {
+        int totalPower = 0;
+
+        for (Fighter fighter : team) {
+            totalPower += fighter.getPowerLevel();
+        }
+
+        String message = "Total team power: " + totalPower;
+        System.out.println(message);
+        System.out.println();
+        battleReport.add(message);
+    }
+
+    public static void startBattle() {
+        if (team.isEmpty()) {
+            System.out.println("You need to create fighters before starting a battle.");
+            System.out.println();
+            return;
+        }
+
+        battleReport.add("=== Battle Started ===");
+        System.out.println("=== Battle Started ===");
+        SoundPlayer.playSound(SOUND_FILE);
+        pause(3000);
+
+        for (Fighter fighter : team) {
+            String attackMessage = fighter.attack();
+            String specialMoveMessage = fighter.specialMove();
+            String attackMessage2 = fighter.attack();
+
+
+            System.out.println(attackMessage);
+            System.out.println(specialMoveMessage);
+            System.out.println(attackMessage2);
+
+            battleReport.add(attackMessage);
+            battleReport.add(specialMoveMessage);
+            battleReport.add(attackMessage2);
+
+            System.out.println();
+        }
+
+        battleReport.add("=== Battle Ended ===");
+        System.out.println("=== Battle Ended ===");
+        System.out.println();
+    }
+
+    public static void saveBattleReport() {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("transactions.txt"));
+
+            writer.write("=== DBZ Battle Arena Report ===");
+            writer.newLine();
+            writer.newLine();
+            writer.write("Team:");
+            writer.newLine();
+
+            if (team.isEmpty()) {
+                writer.write("No fighters have been added.");
+                writer.newLine();
+            } else {
+                for (Fighter fighter : team) {
+                    writer.write("- " + fighter.getFighterInfo());
+                    writer.newLine();
+                }
+            }
+
+            writer.newLine();
+            writer.write("Battle Results:");
+            writer.newLine();
+
+            for (String line : battleReport) {
+                writer.write(line);
+                writer.newLine();
+            }
+
+            writer.close();
+            System.out.println("Battle report saved to transactions.txt");
+            System.out.println();
+        } catch (IOException e) {
+            System.out.println("There was a problem saving the battle report.");
+            System.out.println();
+        }
+    }
+
+    public static int getIntInput(String prompt) {
+        System.out.print(prompt);
+        int number = scanner.nextInt();
+        scanner.nextLine();
+        return number;
+    }
+
+    public static void pause(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
 }
